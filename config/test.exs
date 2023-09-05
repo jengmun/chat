@@ -4,8 +4,15 @@ import Config
 # you can enable the server option below.
 config :chat, ChatWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "jCUCtMKGvZmo+tBJlI5zjlXifFecp03HfCRE8iMtfUtkxxk5tKb3vF0ApYIdUg9L",
+  secret_key_base: "6VpTZkvuNujVY2RR4qZ0EMzTTcYbAlivkv9t4+V3Jyt7EzFbPqmxjt+FAZP7p7DG",
   server: false
+
+# In test we don't send emails.
+config :chat, Chat.Mailer,
+  adapter: Swoosh.Adapters.Test
+
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false
 
 # Print only warnings and errors during test
 config :logger, level: :warning
