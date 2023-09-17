@@ -7,7 +7,7 @@ defmodule ChatWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_chat_key",
-    signing_salt: "Pqk/SbQh",
+    signing_salt: "nduvrzsJ",
     same_site: "Lax"
   ]
 
@@ -26,6 +26,8 @@ defmodule ChatWeb.Endpoint do
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
+    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
+    plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
   end
 
