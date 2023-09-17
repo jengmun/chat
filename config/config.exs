@@ -15,8 +15,7 @@ config :chat, ChatWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Chat.PubSub,
-  live_view: [signing_salt: "KHYdKai/"],
-  force_ssl: [rewrite_on: [:x_forwarded_proto]]
+  live_view: [signing_salt: "KHYdKai/"]
 
 # Configures the mailer
 #
