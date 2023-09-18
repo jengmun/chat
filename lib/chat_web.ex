@@ -2,16 +2,16 @@ defmodule ChatWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
-
+  
   This can be used in your application as:
-
+  
       use ChatWeb, :controller
       use ChatWeb, :html
-
+  
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
   on imports, uses and aliases.
-
+  
   Do NOT define functions inside the quoted expressions
   below. Instead, define additional modules and import
   those modules here.
@@ -51,8 +51,8 @@ defmodule ChatWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {ChatWeb.Layouts, :app}
+      use Phoenix.LiveView
+      # layout: {ChatWeb.Layouts, :app}
 
       unquote(html_helpers())
     end
