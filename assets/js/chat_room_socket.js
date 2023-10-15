@@ -51,35 +51,35 @@ let socket = new Socket("/socket", { params: { token: window.userToken } });
 //     end
 //
 // Finally, connect to the socket:
-socket.connect();
+// socket.connect();
 
 // Now that you are connected, you can join channels with a topic.
 // Let's assume you have a channel with a topic named `room` and the
 // subtopic is its id - in this case 42:
-let channel = socket.channel("room:lobby", {});
-channel
-  .join()
-  .receive("ok", (resp) => {
-    console.log("Joined successfully", resp);
-  })
-  .receive("error", (resp) => {
-    console.log("Unable to join", resp);
-  });
+// let channel = socket.channel("room:lobby", {});
+// channel
+//   .join()
+//   .receive("ok", (resp) => {
+//     console.log("Joined successfully", resp);
+//   })
+//   .receive("error", (resp) => {
+//     console.log("Unable to join", resp);
+//   });
 
-let chatInput = document.querySelector("#chat-input");
-let messagesContainer = document.querySelector("#messages");
+// let chatInput = document.querySelector("#chat-input");
+// let messagesContainer = document.querySelector("#messages");
 
-chatInput.addEventListener("keypress", (event) => {
-  if (event.key === "Enter") {
-    channel.push("New Message", { body: chatInput.value });
-    chatInput.value = "";
-  }
-});
+// chatInput.addEventListener("keypress", (event) => {
+//   if (event.key === "Enter") {
+//     channel.push("New Message From JS", { body: chatInput.value });
+//     chatInput.value = "";
+//   }
+// });
 
-channel.on("New Message", (payload) => {
-  let messageItem = document.createElement("p");
-  messageItem.innerText = `[${Date()}] ${payload.body}`;
-  messagesContainer.appendChild(messageItem);
-});
+// channel.on("New Message From EX", (payload) => {
+//   let messageItem = document.createElement("p");
+//   messageItem.innerText = `[${Date()}] ${payload.body}`;
+//   messagesContainer.appendChild(messageItem);
+// });
 
 export default socket;

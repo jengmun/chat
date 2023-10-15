@@ -18,7 +18,11 @@ defmodule ChatWeb.Router do
   scope "/", ChatWeb do
     pipe_through :browser
 
-    resources "/", ChatRoomController
+    live_session :default do
+      live "/chat", ChatLive, :index
+      live "/chat/:room", ChatRoomLive, :index
+      live "/login", LoginLive, :index
+    end
   end
 
   # Other scopes may use custom stacks.

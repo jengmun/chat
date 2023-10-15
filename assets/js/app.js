@@ -22,14 +22,48 @@ import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
-import "./chat_room_socket.js";
-
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
+
+const hooks = {};
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
+  hooks: hooks,
 });
+
+hooks.getUsername = {
+  mounted() {
+    const result = localStorage.getItem("username");
+
+    this.pushEvent("item_from_session_storage", {
+      username: result,
+    });
+  },
+};
+
+hooks.redirectToChat = {
+  mounted() {
+    window.addEventListener("phx:session-storage", (event) => {
+      const { method, data } = event.detail;
+
+      switch (method) {
+        case "setItem":
+          Object.keys(data).forEach((key) => {
+            console.log(key, data[key]);
+            localStorage.setItem(key, data[key]);
+          });
+          break;
+
+        default:
+          break;
+      }
+
+      this.pushEvent("redirect_to_chat");
+    });
+  },
+};
 
 // Show progress bar on live navigation and form submits
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
