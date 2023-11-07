@@ -1,0 +1,18 @@
+<div>
+  <%= @username %>
+  <br/>
+  <.link navigate={"/chat/" <> Integer.to_string(:rand.uniform(4_294_967_296), 32)}>
+  <button class="new-room-button">New Room</button>
+  </.link>
+  <div id="getRooms" phx-hook="getRooms">
+    <ul>
+      <%= for room <- @rooms do %>
+        <.link navigate={~p"/chat/#{room}"}>
+          <li class={"sidebar-room #{if room === @room do "selected-room" end}"}>
+            <%= room %>
+          </li>
+        </.link>
+      <% end %>
+    </ul>
+  </div>
+</div>

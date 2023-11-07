@@ -19,8 +19,8 @@ defmodule ChatWeb.Router do
     pipe_through :browser
 
     live_session :default do
-      live "/chat", ChatLive, :index
-      live "/chat/:room", ChatRoomLive, :index
+      live "/chat", LandingLive, :index
+      live "/chat/:room", ChatContainerLive, :index
       live "/login", LoginLive, :index
     end
   end

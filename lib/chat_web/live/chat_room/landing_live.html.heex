@@ -1,0 +1,3 @@
+<div id="getUsername" phx-hook="getUsername" class="main-container">
+  <%= live_render @socket, ChatWeb.SidebarLive, id: "sidebar_#{@username}", container: {:div, class: "sidebar-container"}, session: %{"username"=> @username, "room"=> @room} %>
+</div>

@@ -1,14 +1,69 @@
-
-<.live_component module={ChatWeb.SidebarComponent} id="sidebar" username={@username} />
-
-<.form for={@form} phx-submit="submit">
-  <.input type="text" name={:message} field={@form[:message]} /> 
-  <button>Submit</button>
-</.form>
-
 <br /> 
-<%= for %{sender: sender, recipient: recipient, message: message} <- @all_messages do %>
-  <div>
-    Sender: <%= sender %>: <br /> Recipient: <%= recipient %> <br /> Message: <%= message %>
-  </div>
+<div class="chat-room-header">
+  Current Room: 
+  <%= @room %>
+  <br />
+</div>
+
+<div class="chat-room-body" phx-hook="autoScroll" id="autoScroll">
+<%= for %{sender: sender, message: message, datetime: datetime} <- @all_messages do %>
+  <%= cond do %>
+    <% sender === @username -> %>
+      <div class="chat-bubble-container-self">
+        <div class="chat-bubble">
+          <p> 
+            <%= message %> 
+          </p>
+          <p class="chat-datetime"> 
+            <%= "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{datetime.minute}" %>
+          </p>
+        </div>
+      </div>
+    <% sender === nil -> %>
+      <div class="chat-bubble-container-system">
+        <div class="chat-bubble">
+          <p> 
+            <%= message %> 
+          </p>
+          <p class="chat-datetime"> 
+            <%= "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{datetime.minute}" %>
+          </p>
+        </div>
+      </div>  
+    <% true -> %>
+      <div class="chat-bubble-container">
+      <div class="others"> 
+        <p> 
+          <%= sender %> 
+        </p>
+      </div>
+      <div class="chat-bubble">
+        <p> 
+          <%= message %> 
+        </p>
+        <p class="chat-datetime"> 
+          <%= "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{datetime.minute}" %>
+        </p>
+      </div>
+    </div>
+  <% end %>
 <% end %>
+</div>
+
+
+<div class="form-container" id="setStorage" phx-hook="setStorage">
+  <div class="users-typing">
+    <%= Enum.map(@users_typing, fn user -> "#{user}, " end) %> 
+    <%= case length(@users_typing) do %>
+      <% length when length > 1 -> %>
+      are typing... 
+      <% length when length > 0 -> %>
+      is typing... 
+      <% _ -> %>
+    <%end %>
+  </div>
+  <.form for={@form} phx-submit="submit" phx-change="change">
+    <input type="text" name={:message} value={@input_value} placeholder="Write a message..." /> 
+    <button class="submit-button">></button>
+  </.form>
+</div>
