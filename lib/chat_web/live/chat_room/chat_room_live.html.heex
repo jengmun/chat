@@ -1,0 +1,14 @@
+
+<.live_component module={ChatWeb.SidebarComponent} id="sidebar" username={@username} />
+
+<.form for={@form} phx-submit="submit">
+  <.input type="text" name={:message} field={@form[:message]} /> 
+  <button>Submit</button>
+</.form>
+
+<br /> 
+<%= for %{sender: sender, recipient: recipient, message: message} <- @all_messages do %>
+  <div>
+    Sender: <%= sender %>: <br /> Recipient: <%= recipient %> <br /> Message: <%= message %>
+  </div>
+<% end %>

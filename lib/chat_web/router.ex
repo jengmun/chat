@@ -8,6 +8,7 @@ defmodule ChatWeb.Router do
     plug :put_root_layout, html: {ChatWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Plug.CSRFProtection
   end
 
   pipeline :api do
@@ -17,7 +18,11 @@ defmodule ChatWeb.Router do
   scope "/", ChatWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live_session :default do
+      live "/chat", ChatLive, :index
+      live "/chat/:room", ChatRoomLive, :index
+      live "/login", LoginLive, :index
+    end
   end
 
   # Other scopes may use custom stacks.
