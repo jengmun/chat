@@ -3,8 +3,6 @@ defmodule ChatWeb.LandingLive do
   use ChatWeb, :live_view
   require ChatWeb.Constants
 
-  @join_room_event ChatWeb.Constants.ChannelEvents.join_room_event()
-
   def mount(_params, _session, socket) do
     socket =
       assign(socket,

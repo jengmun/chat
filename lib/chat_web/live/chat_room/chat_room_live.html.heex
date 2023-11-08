@@ -50,17 +50,9 @@
 <% end %>
 </div>
 
-
 <div class="form-container" id="setStorage" phx-hook="setStorage">
   <div class="users-typing">
-    <%= Enum.map(@users_typing, fn user -> "#{user}, " end) %> 
-    <%= case length(@users_typing) do %>
-      <% length when length > 1 -> %>
-      are typing... 
-      <% length when length > 0 -> %>
-      is typing... 
-      <% _ -> %>
-    <%end %>
+    <%= user_typing_status(@users_typing, @username) %>
   </div>
   <.form for={@form} phx-submit="submit" phx-change="change">
     <input type="text" name={:message} value={@input_value} placeholder="Write a message..." /> 

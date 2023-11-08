@@ -37,30 +37,56 @@ hooks.getUsername = {
   mounted() {
     const result = localStorage.getItem("username");
 
-    this.pushEvent("item_from_session_storage", {
+    this.pushEvent("get_username", {
       username: result,
     });
   },
 };
+// combine w set storage
+hooks.getRooms = {
+  mounted() {
+    const result = JSON.parse(localStorage.getItem("rooms"));
 
-hooks.redirectToChat = {
+    this.pushEvent("get_rooms", {
+      rooms: result,
+    });
+  },
+};
+
+hooks.setStorage = {
   mounted() {
     window.addEventListener("phx:session-storage", (event) => {
-      const { method, data } = event.detail;
+      const { type, data } = event.detail;
 
-      switch (method) {
-        case "setItem":
+      switch (type) {
+        case "username":
           Object.keys(data).forEach((key) => {
-            console.log(key, data[key]);
             localStorage.setItem(key, data[key]);
           });
+          window.location.href = "/chat";
+          break;
+        case "join_room":
+          const storedRooms = JSON.parse(localStorage.getItem("rooms")) || [];
+
+          if (!storedRooms.find((storedRoom) => storedRoom === data.room)) {
+            const updatedStoredRooms = [data.room, ...storedRooms];
+            localStorage.setItem("rooms", JSON.stringify(updatedStoredRooms));
+          }
+
           break;
 
         default:
           break;
       }
+    });
+  },
+};
 
-      this.pushEvent("redirect_to_chat");
+hooks.autoScroll = {
+  mounted() {
+    window.addEventListener("phx:auto-scroll", () => {
+      const container = document.getElementById("autoScroll");
+      container.scrollTop = container.scrollHeight;
     });
   },
 };

@@ -70,34 +70,24 @@ defmodule ChatWeb.ChatRoomLive do
         }
       })
 
-      if Enum.member?(socket.assigns.users_typing, socket.assigns.username) do
-        ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @user_stop_typing_event, %{
-          data: %{
-            user: socket.assigns.username
-          }
-        })
-      end
+      handle_typing_event(
+        socket.assigns.room,
+        socket.assigns.users_typing,
+        socket.assigns.username,
+        ""
+      )
 
       {:noreply, assign(socket, input_value: "")}
     end
   end
 
   def handle_event("change", %{"message" => message}, socket) do
-    if !Enum.member?(socket.assigns.users_typing, socket.assigns.username) and message !== "" do
-      ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @user_typing_event, %{
-        data: %{
-          user: socket.assigns.username
-        }
-      })
-    else
-      if Enum.member?(socket.assigns.users_typing, socket.assigns.username) and message === "" do
-        ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @user_stop_typing_event, %{
-          data: %{
-            user: socket.assigns.username
-          }
-        })
-      end
-    end
+    handle_typing_event(
+      socket.assigns.room,
+      socket.assigns.users_typing,
+      socket.assigns.username,
+      message
+    )
 
     {:noreply, assign(socket, input_value: message)}
   end
@@ -139,6 +129,45 @@ defmodule ChatWeb.ChatRoomLive do
              socket.assigns.users_typing --
                [data.user]
          )}
+    end
+  end
+
+  def handle_typing_event(room, users_typing, user, msg) do
+    if Enum.member?(users_typing, user) do
+      if msg === "" do
+        ChatWeb.Endpoint.broadcast!(
+          "room:" <> room,
+          @user_stop_typing_event,
+          %{
+            data: %{
+              user: user
+            }
+          }
+        )
+      end
+    else
+      if msg !== "" do
+        ChatWeb.Endpoint.broadcast!("room:" <> room, @user_typing_event, %{
+          data: %{
+            user: user
+          }
+        })
+      end
+    end
+  end
+
+  def user_typing_status(users_typing, username) do
+    other_users = Enum.filter(users_typing, fn user -> user !== username end)
+
+    case length(other_users) do
+      0 ->
+        ""
+
+      1 ->
+        Enum.join(other_users, ", ") <> " is typing..."
+
+      _ ->
+        Enum.join(other_users, ", ") <> " are typing..."
     end
   end
 end
