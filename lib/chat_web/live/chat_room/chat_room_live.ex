@@ -2,6 +2,7 @@ defmodule ChatWeb.ChatRoomLive do
   require Logger
   use ChatWeb, :live_view
   require ChatWeb.Constants
+  require Ecto.Query
 
   @new_msg_event ChatWeb.Constants.ChannelEvents.new_message_event()
   @join_room_event ChatWeb.Constants.ChannelEvents.join_room_event()
@@ -11,9 +12,18 @@ defmodule ChatWeb.ChatRoomLive do
   def mount(_params, session, socket) do
     %{"username" => username, "room" => room} = session
 
+    all_db_messages = Chats.ChatMessage |> Ecto.Query.where(room: ^room) |> Chats.Repo.all()
+
+    all_messages =
+      Enum.map(all_db_messages, fn msg ->
+        {:ok, new_datetime} = DateTime.from_unix(msg.datetime)
+
+        %{msg | datetime: new_datetime}
+      end)
+
     socket =
       assign(socket,
-        all_messages: [],
+        all_messages: all_messages,
         room: room,
         username: username,
         users_typing: [],
@@ -43,7 +53,7 @@ defmodule ChatWeb.ChatRoomLive do
           ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @new_msg_event, %{
             data: %{
               sender: nil,
-              recipient: socket.assigns.room,
+              room: socket.assigns.room,
               message: "#{socket.assigns.username} has just left the room",
               datetime: datetime
             }
@@ -64,7 +74,7 @@ defmodule ChatWeb.ChatRoomLive do
       ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @new_msg_event, %{
         data: %{
           sender: socket.assigns.username,
-          recipient: socket.assigns.room,
+          room: socket.assigns.room,
           message: message,
           datetime: datetime
         }
@@ -76,6 +86,15 @@ defmodule ChatWeb.ChatRoomLive do
         socket.assigns.username,
         ""
       )
+
+      db_data = %Chats.ChatMessage{
+        sender: socket.assigns.username,
+        room: socket.assigns.room,
+        message: message,
+        datetime: DateTime.to_unix(datetime)
+      }
+
+      Chats.Repo.insert!(db_data)
 
       {:noreply, assign(socket, input_value: "")}
     end
@@ -169,5 +188,16 @@ defmodule ChatWeb.ChatRoomLive do
       _ ->
         Enum.join(other_users, ", ") <> " are typing..."
     end
+  end
+
+  def datetime_format(datetime) do
+    minute =
+      if String.length(Integer.to_string(datetime.minute)) === 1 do
+        "0#{datetime.minute}"
+      else
+        datetime.minute
+      end
+
+    "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{minute}"
   end
 end

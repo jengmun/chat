@@ -40,7 +40,7 @@ defmodule ChatWeb.ChatContainerLive do
         ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @join_room_event, %{
           data: %{
             sender: nil,
-            recipient: socket.assigns.room,
+            room: socket.assigns.room,
             message: "#{username} has just joined the room",
             datetime: datetime
           }

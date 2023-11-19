@@ -15,7 +15,7 @@
             <%= message %> 
           </p>
           <p class="chat-datetime"> 
-            <%= "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{datetime.minute}" %>
+            <%= datetime_format(datetime)%>
           </p>
         </div>
       </div>
@@ -26,7 +26,7 @@
             <%= message %> 
           </p>
           <p class="chat-datetime"> 
-            <%= "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{datetime.minute}" %>
+            <%= datetime_format(datetime) %>
           </p>
         </div>
       </div>  
@@ -42,7 +42,7 @@
           <%= message %> 
         </p>
         <p class="chat-datetime"> 
-          <%= "#{datetime.day}-#{datetime.month}-#{datetime.year} #{datetime.hour}:#{datetime.minute}" %>
+          <%= datetime_format(datetime) %>
         </p>
       </div>
     </div>
