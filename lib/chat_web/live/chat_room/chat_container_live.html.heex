@@ -1,0 +1,4 @@
+<div class="main-container">
+  <%= live_render @socket, ChatWeb.SidebarLive, id: "sidebar_#{@room}", container: {:div, class: "sidebar-container"}, session: %{"room" => @room} %>
+  <%= live_render @socket, ChatWeb.ChatRoomLive, id: "chatroom_#{@room}", container: {:div, class: "chat-room-container"}, session: %{"room" => @room} %>
+</div>

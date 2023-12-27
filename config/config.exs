@@ -56,6 +56,24 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :chat, Chats.Repo,
+  database: String.trim(System.get_env("DATABASE_USERNAME", "\r")),
+  username: String.trim(System.get_env("DATABASE_USERNAME", "\r")),
+  password: String.trim(System.get_env("DATABASE_PASSWORD", "\r")),
+  hostname: String.trim(System.get_env("DATABASE_HOST", "\r")),
+  pool_size: 1
+
+config :chat, ecto_repos: [Chats.Repo]
+
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: String.trim(System.get_env("GITHUB_CLIENT_ID", "\r")),
+  client_secret: String.trim(System.get_env("GITHUB_CLIENT_SECRET", "\r"))
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

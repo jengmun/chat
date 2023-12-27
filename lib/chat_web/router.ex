@@ -1,5 +1,6 @@
 defmodule ChatWeb.Router do
   use ChatWeb, :router
+  import ChatWeb.AuthController
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -16,13 +17,19 @@ defmodule ChatWeb.Router do
   end
 
   scope "/", ChatWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_auth]
 
     live_session :default do
-      live "/chat", ChatLive, :index
-      live "/chat/:room", ChatRoomLive, :index
-      live "/login", LoginLive, :index
+      live "/", LandingLive, :index
+      live "/:room", ChatContainerLive, :index
     end
+  end
+
+  scope "/auth", ChatWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.

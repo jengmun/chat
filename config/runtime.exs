@@ -48,6 +48,17 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :chat, Chats.Repo,
+    database: String.trim(System.get_env("DATABASE_USERNAME", "\r")),
+    username: String.trim(System.get_env("DATABASE_USERNAME", "\r")),
+    password: String.trim(System.get_env("DATABASE_PASSWORD", "\r")),
+    hostname: String.trim(System.get_env("DATABASE_HOST", "\r")),
+    pool_size: 1
+
+  config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+    client_id: String.trim(System.get_env("GITHUB_CLIENT_ID", "\r")),
+    client_secret: String.trim(System.get_env("GITHUB_CLIENT_SECRET", "\r"))
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

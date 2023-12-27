@@ -3,3 +3,146 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container button {
+  background-color: rgb(0 122 213);
+  padding: 15px;
+  border-radius: 30px;
+  width: 100%;
+  color: white;
+  margin-top: 15px;
+}
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-container {
+  width: 20%;
+  background-color: rgb(245 249 252);
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.sidebar-room {
+  padding: 15px;
+  margin: 5px;
+}
+
+.selected-room {
+  background-color: rgb(226 238 246);
+}
+
+.new-room-button {
+  background-color: rgb(0 175 240);
+  position: relative;
+  width: 100%;
+}
+
+.chat-room-container {
+  width: 80%;
+  height: 100%;
+}
+
+.chat-room-header {
+  font-size: 2rem;
+  padding-left: 15px;
+}
+
+.chat-room-body {
+  height: 80%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.form-container {
+  position: fixed;
+  bottom: 0;
+  margin: 5px;
+  width: 78%;
+}
+
+.form-container form {
+  display: flex;
+  border-top: 1px solid rgb(98 206 246);
+  justify-content: space-between;
+}
+
+.form-container input {
+  width: 90%;
+  border: none;
+}
+
+.form-container input:focus {
+  box-shadow: none;
+}
+
+.submit-button {
+  background-color: rgb(0 175 240);
+  padding: 10px;
+  margin: 5px;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+}
+
+.chat-bubble-container {
+  margin: 5px;
+}
+
+.chat-bubble-container-self {
+  margin: 5px;
+  display: flex;
+  justify-content: right;
+}
+
+.chat-bubble-container-system {
+  margin: 2px;
+  display: flex;
+  justify-content: center;
+}
+
+.chat-bubble-container .chat-bubble {
+  background-color: rgb(240 244 248);
+}
+
+.chat-bubble-container-self .chat-bubble {
+  background-color: rgb(219 244 253);
+}
+
+.chat-bubble-container-system .chat-bubble,
+.chat-bubble-container-system .chat-datetime {
+  text-align: center;
+}
+
+.others p {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.self p {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.chat-bubble {
+  border-radius: 30px;
+  padding: 15px;
+  width: 50%;
+}
+
+.chat-datetime {
+  text-align: right;
+  font-size: 0.8rem;
+}
