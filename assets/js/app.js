@@ -33,16 +33,6 @@ let liveSocket = new LiveSocket("/live", Socket, {
   hooks: hooks,
 });
 
-hooks.getUsername = {
-  mounted() {
-    const result = localStorage.getItem("username");
-
-    this.pushEvent("get_username", {
-      username: result,
-    });
-  },
-};
-// combine w set storage
 hooks.getRooms = {
   mounted() {
     const result = JSON.parse(localStorage.getItem("rooms"));
@@ -53,30 +43,20 @@ hooks.getRooms = {
   },
 };
 
-hooks.setStorage = {
+hooks.joinRoom = {
   mounted() {
-    window.addEventListener("phx:session-storage", (event) => {
-      const { type, data } = event.detail;
+    window.addEventListener("phx:join-room", (event) => {
+      const { data } = event.detail;
 
-      switch (type) {
-        case "username":
-          Object.keys(data).forEach((key) => {
-            localStorage.setItem(key, data[key]);
-          });
-          window.location.href = "/chat";
-          break;
-        case "join_room":
-          const storedRooms = JSON.parse(localStorage.getItem("rooms")) || [];
+      const storedRooms = JSON.parse(localStorage.getItem("rooms")) || [];
 
-          if (!storedRooms.find((storedRoom) => storedRoom === data.room)) {
-            const updatedStoredRooms = [data.room, ...storedRooms];
-            localStorage.setItem("rooms", JSON.stringify(updatedStoredRooms));
-          }
+      if (!storedRooms.find((storedRoom) => storedRoom === data.room)) {
+        const updatedStoredRooms = [data.room, ...storedRooms];
+        localStorage.setItem("rooms", JSON.stringify(updatedStoredRooms));
 
-          break;
-
-        default:
-          break;
+        this.pushEvent("get_rooms", {
+          rooms: updatedStoredRooms,
+        });
       }
     });
   },

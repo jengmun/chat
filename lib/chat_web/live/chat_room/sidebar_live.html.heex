@@ -1,14 +1,13 @@
-<div>
-  <%= @username %>
+<div id="joinRoom" phx-hook="joinRoom">
+  <img src={@user.avatar} width="100" height="100"/>
+  <%= @user.username %>
   <br/>
-  <.link navigate={"/chat/" <> Integer.to_string(:rand.uniform(4_294_967_296), 32)}>
-  <button class="new-room-button">New Room</button>
-  </.link>
+  <button class="new-room-button" phx-click="create_room">New Room</button>
   <div id="getRooms" phx-hook="getRooms">
     <ul>
       <%= for room <- @rooms do %>
-        <.link navigate={~p"/chat/#{room}"}>
-          <li class={"sidebar-room #{if room === @room do "selected-room" end}"}>
+        <.link navigate={~p"/#{room}"}>
+          <li class={"sidebar-room #{if room === @room do "selected-room" end}"} id="joinRoom" phx-hook="joinRoom">
             <%= room %>
           </li>
         </.link>

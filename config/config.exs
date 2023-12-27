@@ -57,12 +57,22 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :chat, Chats.Repo,
-  database: "chats",
-  username: "postgres",
-  password: "password",
-  hostname: "localhost"
+  database: "gthsrztg",
+  username: "gthsrztg",
+  password: System.get_env("DATABASE_PASSWORD"),
+  hostname: "topsy.db.elephantsql.com",
+  pool_size: 1
 
 config :chat, ecto_repos: [Chats.Repo]
+
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {Ueberauth.Strategy.Github, [default_scope: "user,user:email,public_repo"]}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

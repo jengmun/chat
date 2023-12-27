@@ -8,7 +8,7 @@
 <div class="chat-room-body" phx-hook="autoScroll" id="autoScroll">
 <%= for %{sender: sender, message: message, datetime: datetime} <- @all_messages do %>
   <%= cond do %>
-    <% sender === @username -> %>
+    <% sender === @user.username -> %>
       <div class="chat-bubble-container-self">
         <div class="chat-bubble">
           <p> 
@@ -50,9 +50,9 @@
 <% end %>
 </div>
 
-<div class="form-container" id="setStorage" phx-hook="setStorage">
+<div class="form-container" id="joinRoom" phx-hook="joinRoom">
   <div class="users-typing">
-    <%= user_typing_status(@users_typing, @username) %>
+    <%= user_typing_status(@users_typing, @user.username) %>
   </div>
   <.form for={@form} phx-submit="submit" phx-change="change">
     <input type="text" name={:message} value={@input_value} placeholder="Write a message..." /> 

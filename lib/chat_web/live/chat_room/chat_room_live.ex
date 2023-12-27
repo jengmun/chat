@@ -10,7 +10,8 @@ defmodule ChatWeb.ChatRoomLive do
   @user_stop_typing_event ChatWeb.Constants.ChannelEvents.user_stop_typing_event()
 
   def mount(_params, session, socket) do
-    %{"username" => username, "room" => room} = session
+    user = session["user"]
+    room = session["room"]
 
     all_db_messages = Chats.ChatMessage |> Ecto.Query.where(room: ^room) |> Chats.Repo.all()
 
@@ -25,7 +26,11 @@ defmodule ChatWeb.ChatRoomLive do
       assign(socket,
         all_messages: all_messages,
         room: room,
-        username: username,
+        user: %{
+          username: user.username,
+          email: user.email,
+          avatar: user.avatar
+        },
         users_typing: [],
         form: to_form(%{}),
         input_value: ""
@@ -35,8 +40,7 @@ defmodule ChatWeb.ChatRoomLive do
       ChatWeb.Endpoint.subscribe("room:" <> room)
 
       {:ok,
-       push_event(socket, "session-storage", %{
-         type: :join_room,
+       push_event(socket, "join-room", %{
          data: %{room: room}
        })}
     else
@@ -47,14 +51,14 @@ defmodule ChatWeb.ChatRoomLive do
   def terminate(params, socket) do
     case params do
       {:shutdown, reason} when reason == :left or reason == :closed ->
-        if(socket.assigns.username !== "") do
+        if(socket.assigns.user.username !== "") do
           {:ok, datetime} = DateTime.now("Asia/Singapore", Tz.TimeZoneDatabase)
 
           ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @new_msg_event, %{
             data: %{
               sender: nil,
               room: socket.assigns.room,
-              message: "#{socket.assigns.username} has just left the room",
+              message: "#{socket.assigns.user.username} has just left the room",
               datetime: datetime
             }
           })
@@ -73,7 +77,7 @@ defmodule ChatWeb.ChatRoomLive do
 
       ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @new_msg_event, %{
         data: %{
-          sender: socket.assigns.username,
+          sender: socket.assigns.user.username,
           room: socket.assigns.room,
           message: message,
           datetime: datetime
@@ -83,12 +87,12 @@ defmodule ChatWeb.ChatRoomLive do
       handle_typing_event(
         socket.assigns.room,
         socket.assigns.users_typing,
-        socket.assigns.username,
+        socket.assigns.user.username,
         ""
       )
 
       db_data = %Chats.ChatMessage{
-        sender: socket.assigns.username,
+        sender: socket.assigns.user.username,
         room: socket.assigns.room,
         message: message,
         datetime: DateTime.to_unix(datetime)
@@ -104,7 +108,7 @@ defmodule ChatWeb.ChatRoomLive do
     handle_typing_event(
       socket.assigns.room,
       socket.assigns.users_typing,
-      socket.assigns.username,
+      socket.assigns.user.username,
       message
     )
 

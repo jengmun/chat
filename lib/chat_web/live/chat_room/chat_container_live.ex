@@ -5,11 +5,13 @@ defmodule ChatWeb.ChatContainerLive do
 
   @join_room_event ChatWeb.Constants.ChannelEvents.join_room_event()
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    user = session["user"]
+
     socket =
       assign(socket,
         room: "",
-        username: ""
+        user: %{username: user.username, email: user.email, avatar: user.avatar}
       )
 
     {:ok, socket}
@@ -26,44 +28,6 @@ defmodule ChatWeb.ChatContainerLive do
       {:noreply, socket}
     else
       {:noreply, socket}
-    end
-  end
-
-  def handle_event("get_username", %{"username" => username}, socket) do
-    cond do
-      username === nil ->
-        {:noreply, push_navigate(socket, to: "/login")}
-
-      socket.assigns.room !== "" ->
-        {:ok, datetime} = DateTime.now("Asia/Singapore", Tz.TimeZoneDatabase)
-
-        ChatWeb.Endpoint.broadcast!("room:" <> socket.assigns.room, @join_room_event, %{
-          data: %{
-            sender: nil,
-            room: socket.assigns.room,
-            message: "#{username} has just joined the room",
-            datetime: datetime
-          }
-        })
-
-        socket =
-          assign(socket,
-            username: username
-          )
-
-        {:noreply,
-         push_event(socket, "session-storage", %{
-           type: :join_room,
-           data: %{room: socket.assigns.room}
-         })}
-
-      true ->
-        socket =
-          assign(socket,
-            username: username
-          )
-
-        {:noreply, socket}
     end
   end
 end

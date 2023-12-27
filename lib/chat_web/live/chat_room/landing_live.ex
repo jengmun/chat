@@ -6,25 +6,12 @@ defmodule ChatWeb.LandingLive do
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
-        room: "",
-        username: ""
+        room: ""
       )
 
-    {:ok, socket}
-  end
-
-  def handle_event("get_username", %{"username" => username}, socket) do
-    cond do
-      username === nil ->
-        {:noreply, push_navigate(socket, to: "/login")}
-
-      true ->
-        socket =
-          assign(socket,
-            username: username
-          )
-
-        {:noreply, socket}
-    end
+    {
+      :ok,
+      socket
+    }
   end
 end
