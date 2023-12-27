@@ -52,7 +52,8 @@ defmodule Chat.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:oauth2, "~> 2.0.1"},
       {:ueberauth, "~> 0.10.3"},
-      {:ueberauth_github, github: "ueberauth/ueberauth_github", tag: "v0.8.2"}
+      {:ueberauth_github, github: "ueberauth/ueberauth_github", tag: "v0.8.2"},
+      {:dotenv, "~> 3.0.0", only: [:dev, :test]}
     ]
   end
 
